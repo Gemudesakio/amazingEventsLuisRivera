@@ -1,0 +1,38 @@
+
+main{
+    min-height: 100vh;
+    background-color: rgba(56, 55, 55, 0.623);
+}
+footer{
+    height: 8vh;
+    background-color: brown;
+}
+.contenedorIMG{
+    height: 90%;
+    width: 25%;
+}
+.contenedorIMG img{
+    height: 80%;
+}
+.logo{
+    height: 100%;
+}
+#logo{
+    height: 5vh;
+}
+.carousel-inner{
+    height: 45vh;
+}
+.carousel-item{
+    height: 100%;
+}
+.carousel-item img{
+    height: 100%;
+    object-fit: cover;
+}
+.col-md-4 img{
+    height: 100%;
+    object-fit: cover;
+}
+
+
