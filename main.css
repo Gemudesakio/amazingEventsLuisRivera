@@ -9,7 +9,7 @@ footer{
 }
 .contenedorIMG{
     height: 90%;
-    width: 25%;
+    width: 50%;
 }
 .contenedorIMG img{
     height: 80%;
@@ -30,9 +30,48 @@ footer{
     height: 100%;
     object-fit: cover;
 }
-.col-md-4 img{
+
+.card {
+    height: 100%
+}
+
+.cardIMG {
+    height: 200px; 
+    object-fit: cover; 
+}
+
+.cardIMG {
+    height: 200px;
+    object-fit: cover; 
+}
+
+h5.card-title {
+    height: 6vh;
+    overflow: hidden; 
+    text-overflow: ellipsis; 
+  }
+  .card-text {
+    height: 15vh;
+    overflow: hidden; 
+    text-overflow: ellipsis; 
+  }
+  
+  .details{
+    width: 80%;
+    height: 100vh;
+
+  }
+  .Details{
+    height: 100%;
+  }
+  .detailsIMG{
     height: 100%;
     object-fit: cover;
-}
+  }
+
+ 
+  
+
+
 
 
