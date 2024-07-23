@@ -58,7 +58,7 @@ h5.card-title {
   
   .details{
     width: 80%;
-    height: 100vh;
+  
 
   }
   .Details{
@@ -68,6 +68,10 @@ h5.card-title {
     height: 100%;
     object-fit: cover;
   }
+  .filtro{
+    display: none;
+}
+
 
  
   

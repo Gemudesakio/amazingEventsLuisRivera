@@ -195,84 +195,45 @@ const data = {
     ],
   };
 
-  let tamanio = data.events.length
-  let contenedor = document.getElementById("contenedorMain")
-  let contenedorCategory = document.getElementById("category")
-  let textSearch = document.getElementById('textSearch')
-  //extraer las categorias del vector de tareas
-  let categoria = data.events.map( event => event.category)
-  let categoriasUnicas = [...new Set(categoria)];
-  let eventos = data.events
+  const urlSeach = new URLSearchParams(window.location.search);
+  const id = urlSeach.get('id');
 
-
- 
-// Verificar si se están seleccionando los checkboxes
-
-
-  for(let i=0; i<tamanio; i++){
-    crearTarjetas(i)
-  }
-  categoriasUnicas.forEach( categoria => {
-      crearCheckbox(categoria)
-  })
-
-  contenedorCategory.addEventListener('change', aplicarFiltros)
-  textSearch.addEventListener('input', aplicarFiltros)
-
-
-  function aplicarFiltros() {
-    let texto = textSearch.value.toLowerCase().trim()
-    let valoresChekeados = Array.from(document.querySelectorAll('.filter-checkbox:checked')).map(checkbox => checkbox.value.toLowerCase().trim())
-
-    // Seleccionar todas las tarjetas del contenedor
-    let tarjetas = document.querySelectorAll('.card')
-    
-    tarjetas.forEach(tarjeta => {
-        let descripcion = tarjeta.querySelector('.card-text').innerText.toLowerCase().trim()
-        
-        let categoria = tarjeta.querySelector('.card-text').classList[1].toLowerCase().trim()
-        // Verificar si la descripción contiene el texto de búsqueda y si la categoría está entre los valores seleccionados
-        let cumpleBusqueda = texto === "" || descripcion.includes(texto)
-        let cumpleFiltro = valoresChekeados.length === 0 || valoresChekeados.includes(categoria)
-
-        // Mostrar u ocultar tarjeta basado en los filtros
-        tarjeta.classList.toggle('filtro', !(cumpleBusqueda && cumpleFiltro))
-    });
-  //let eventosFIltraods = eventos.filter( evento => evento.description.toLowerCase().trim().includes(texto) || texto =="")
-}
-
-
-
-
-  function crearTarjetas(i){
-    let tarjeta = document.createElement('div')
-    tarjeta.classList.add('m-3', 'col-lg-3', 'col-md-4', 'col-sm-6', 'col-12', 'card', 'p-1')
-    tarjeta.innerHTML = `         
-            <img class="cardIMG" src=${data.events[i].image} alt="imagen">
-           <div class="row card-body">
-              <h5 class="card-title col-lg-12">${data.events[i].name}</h5>
-               <p class="card-text ${data.events[i].category}">${truncateText(data.events[i].description)}</p>
-              <p class="col-lg-5 col-12" >${data.events[i].price}</p>
-              <a href="./Details.html?id=${data.events[i]._id}" class="btn btn-primary details-button col-lg-7 col-12">Details</a>
-           </div>
-    `
-    contenedor.appendChild(tarjeta)
-  }
-
-  function crearCheckbox(categoria){
-     let categorias = document.createElement('div')
-     categorias.classList.add('col-12', 'col-sm-6', 'col-md-4', 'col-lg-2', 'd-flex', 'align-items-center', 'justify-content-start', 'mb-2')
-       categorias.innerHTML=`  <input type="checkbox" id="checkbox" class="me-2 filter-checkbox" value="${categoria}">
-                <label for="checkbox">${categoria}</label>
-       `
-
-       contenedorCategory.appendChild(categorias)
+  const evento = data.events.find(p => p._id === id); 
+  
+  let contenedor = document.getElementById('contenedorDetails');
+  
+  function crearDetails(evento) {
+      if (!evento) {
+          console.error('Evento no encontrado');
+          return;
+      }
+  
+      let detalles = document.createElement('div');
+      detalles.classList.add('row', 'g-0');
+      
+      // Lógica condicional para asistencia o estimado
+      let asistenciaOEstimado = evento.assistance ? evento.assistance : evento.estimate;
+      let textoAsistenciaOEstimado = evento.assistance ? "Asistencia" : "Estimado";
+  
+      detalles.innerHTML = `
+          <div class="col-md-4">
+              <img src="${evento.image}" class="img-fluid rounded-start detailsIMG" alt="${evento.name}">
+          </div>
+          <div class="col-md-8">
+              <div class="card-body">
+                  <h5 class="card-title">${evento.name}</h5>
+                  <p class="card-title"><small class="text-body-secondary">${evento.date}</small></p>
+                  <p class="card-text">${evento.description}</p>
+                  <p class="card-title"><small class="text-body-secondary">Capacidad: ${evento.capacity} </small></p>
+                  <p class="card-title"><small class="text-body-secondary">${textoAsistenciaOEstimado}: ${asistenciaOEstimado}</small></p>
+                  <p class="card-title"><small class="text-body-secondary">Precio: ${evento.price}</small></p>
+              </div>
+          </div>
+      `;
+  
+      
+          contenedor.appendChild(detalles);
+     
   }
   
-  function truncateText(text) {
-    const maxLength = 70; // Número máximo de caracteres permitidos
-    if (text.length > maxLength) {
-        return text.slice(0, maxLength) + '...'; // Truncar el texto si es demasiado largo
-    }
-    return text;
-}
+  crearDetails(evento);

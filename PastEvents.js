@@ -8,7 +8,7 @@ const data = {
         date: "2022-12-12",
         description:
           "Enjoy your favourite dishes, from different countries, in a unique event for the whole family.",
-        category: "Food Fair",
+        category: "Food-Fair",
         place: "Room A",
         capacity: 45000,
         assistance: 42756,
@@ -22,7 +22,7 @@ const data = {
         date: "2023-08-12",
         description:
           "Enjoy the best Korean dishes, with international chefs and awesome events.",
-        category: "Food Fair",
+        category: "Food-Fair",
         place: "Room A",
         capacity: 45000,
         price: 10,
@@ -64,7 +64,7 @@ const data = {
         date: "2022-02-12",
         description:
           "For comic lovers, all your favourite characters gathered in one place.",
-        category: "Costume Party",
+        category: "Costume-Party",
         place: "Room C",
         capacity: 120000,
         assistance: 110000,
@@ -77,7 +77,7 @@ const data = {
         image: "https://i.postimg.cc/RZ9fH4Pr/halloween.jpg",
         date: "2023-02-12",
         description: "Come with your scariest costume and win incredible prizes.",
-        category: "Costume Party",
+        category: "Costume-Party",
         place: "Room C",
         capacity: 12000,
         estimate: 9000,
@@ -90,7 +90,7 @@ const data = {
         image: "https://i.postimg.cc/PrMJ0ZMc/Metallica-in-concert.jpg",
         date: "2023-01-22",
         description: "The only concert of the most emblematic band in the world.",
-        category: "Music Concert",
+        category: "Music-Concert",
         place: "Room A",
         capacity: 138000,
         estimate: 138000,
@@ -104,7 +104,7 @@ const data = {
         date: "2022-01-22",
         description:
           "The best national and international DJs gathered in one place.",
-        category: "Music Concert",
+        category: "Music-Concert",
         place: "Room A",
         capacity: 138000,
         assistance: 110300,
@@ -144,7 +144,7 @@ const data = {
         image: "https://i.postimg.cc/Sst763n6/book1.jpg",
         date: "2023-10-15",
         description: "Bring your unused school book and take the one you need.",
-        category: "Book Exchange",
+        category: "Book-Exchange",
         place: "Room D1",
         capacity: 150000,
         estimate: 123286,
@@ -158,7 +158,7 @@ const data = {
         date: "2022-11-09",
         description:
           "If you're a gastronomy lover come get the cookbook that best suits your taste and your family's.",
-        category: "Book Exchange",
+        category: "Book-Exchange",
         place: "Room D6",
         capacity: 130000,
         assistance: 90000,
@@ -195,35 +195,84 @@ const data = {
     ],
   };
 
-  let tamanio = data.events.length
-  let contenedor = document.getElementById("contenedorMain")
+  
+  
+  let tamanio = data.events.length;
+  let contenedor = document.getElementById("contenedorMain");
   let currentDateObj = new Date(data.currentDate);
-  for(let i = 0; i < tamanio; i++) {
+  let contenedorCategory = document.getElementById("category");
+  let textSearch = document.getElementById('textSearch');
+  
+  // Extraer las categorías del vector de tareas
+  let categoria = data.events.map(event => event.category);
+  let categoriasUnicas = [...new Set(categoria)];
+  
+  // Crear tarjetas y checkboxes al cargar la página
+  for (let i = 0; i < tamanio; i++) {
+    crearTarjetas(i);
+  }
+  categoriasUnicas.forEach(categoria => {
+    crearCheckbox(categoria);
+  });
+  
+  // Añadir eventos para aplicar filtros
+  contenedorCategory.addEventListener('change', aplicarFiltros);
+  textSearch.addEventListener('input', aplicarFiltros);
+  
+  function aplicarFiltros() {
+    let texto = textSearch.value.toLowerCase().trim();
+    let valoresChekeados = Array.from(document.querySelectorAll('.filter-checkbox:checked')).map(checkbox => checkbox.value.toLowerCase().trim());
+  
+    // Seleccionar todas las tarjetas del contenedor
+    let tarjetas = document.querySelectorAll('.card');
+  
+    tarjetas.forEach(tarjeta => {
+      let descripcion = tarjeta.querySelector('.card-text').innerText.toLowerCase().trim();
+      let categoriaElement = tarjeta.querySelector('.card-text');
+      let categoria = categoriaElement ? categoriaElement.classList[1].toLowerCase().trim() : '';
+  
+      // Verificar si la descripción contiene el texto de búsqueda y si la categoría está entre los valores seleccionados
+      let cumpleBusqueda = texto === "" || descripcion.includes(texto);
+      let cumpleFiltro = valoresChekeados.length === 0 || valoresChekeados.includes(categoria);
+  
+      // Mostrar u ocultar tarjeta basado en los filtros
+      tarjeta.classList.toggle('filtro', !(cumpleBusqueda && cumpleFiltro));
+    });
+  }
+  
+  function crearTarjetas(i) {
     let dateToCompareObj = new Date(data.events[i].date);
     if (currentDateObj > dateToCompareObj) {
-        let tarjeta = document.createElement('div');
-        tarjeta.classList.add('mb-3', 'col-lg-3', 'col-md-4', 'col-sm-6', 'col-12'); // Clases de Bootstrap para columnas
-        tarjeta.innerHTML = `
-              <div class="card">
+      let tarjeta = document.createElement('div')
+      tarjeta.classList.add('m-3', 'col-lg-3', 'col-md-4', 'col-sm-6', 'col-12', 'card', 'p-1')
+      tarjeta.innerHTML = `         
               <img class="cardIMG" src=${data.events[i].image} alt="imagen">
              <div class="row card-body">
                 <h5 class="card-title col-lg-12">${data.events[i].name}</h5>
-                <p class="card-text">${truncateText(data.events[i].description)}</p>
+                 <p class="card-text ${data.events[i].category}">${truncateText(data.events[i].description)}</p>
                 <p class="col-lg-5 col-12" >${data.events[i].price}</p>
-                <a href="./Details.html" class="btn btn-primary col-lg-7 col-12">Details</a>
+                <a href="./Details.html?id=${data.events[i]._id}" class="btn btn-primary details-button col-lg-7 col-12">Details</a>
              </div>
-          </div>
-        `;
-        
-        contenedor.appendChild(tarjeta);
+      `
+      contenedor.appendChild(tarjeta)
     }
-}
-
-function truncateText(text) {
+  }
+  
+  function crearCheckbox(categoria) {
+    let categorias = document.createElement('div');
+    categorias.classList.add('col-12', 'col-sm-6', 'col-md-4', 'col-lg-2', 'd-flex', 'align-items-center', 'justify-content-start', 'mb-2');
+    categorias.innerHTML = `
+      <input type="checkbox" id="checkbox" class="me-2 filter-checkbox" value="${categoria}">
+      <label for="checkbox">${categoria}</label>
+    `;
+    contenedorCategory.appendChild(categorias);
+  }
+  
+  function truncateText(text) {
     const maxLength = 50; // Número máximo de caracteres permitidos
     if (text.length > maxLength) {
-        return text.slice(0, maxLength) + '...'; // Truncar el texto si es demasiado largo
+      return text.slice(0, maxLength) + '...'; // Truncar el texto si es demasiado largo
     }
     return text;
-}
-
+  }
+  
